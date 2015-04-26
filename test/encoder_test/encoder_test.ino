@@ -4,9 +4,6 @@
  * available  here: https://github.com/mmurdoch/arduinounit (2.0 or greater.)
  */
 
-#include <Wire.h>
-#include <Servo.h>
-
 #include <ArduinoUnit.h>
 #include <ConfigurableFirmata.h>
 #include <Encoder.h>

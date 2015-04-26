@@ -8,8 +8,6 @@
 
   See file LICENSE.txt for further informations on licensing terms.
  */
-#include <Wire.h>
-#include <Servo.h>
 
 #include <ConfigurableFirmata.h>
 #include <FirmataExt.h>
