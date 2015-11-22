@@ -1,5 +1,5 @@
 /*
-  FirmataEncoder.cpp - Firmata library
+  FirmataEncoder.cpp - Firmata library v0.1.0 - 2015-11-22
   Copyright (C) 2013 Norbert Truchsess. All rights reserved.
   Copyright (C) 2014 Nicolas Panel. All rights reserved.
   Copyright (C) 2015 Jeff Hoefs. All rights reserved.
@@ -29,7 +29,7 @@ static byte autoReport = 0x02;
 /* Constructor */
 FirmataEncoder::FirmataEncoder()
 {
-  memset(encoders,0,sizeof(Encoder*)*MAX_ENCODERS);
+  memset(encoders, 0, sizeof(Encoder*)*MAX_ENCODERS);
 }
 
 void FirmataEncoder::attachEncoder(byte encoderNum, byte pinANum, byte pinBNum)
@@ -44,8 +44,8 @@ void FirmataEncoder::attachEncoder(byte encoderNum, byte pinANum, byte pinBNum)
   {
     //Firmata.sendString("Encoder Warning: For better performences, you should only use Interrput pins.");
   }
-  Firmata.setPinMode(pinANum, ENCODER);
-  Firmata.setPinMode(pinBNum, ENCODER);
+  Firmata.setPinMode(pinANum, PIN_MODE_ENCODER);
+  Firmata.setPinMode(pinBNum, PIN_MODE_ENCODER);
   encoders[encoderNum] = new Encoder(pinANum, pinBNum);
   reportPosition(encoderNum);
 }
@@ -61,7 +61,7 @@ void FirmataEncoder::detachEncoder(byte encoderNum)
 
 boolean FirmataEncoder::handlePinMode(byte pin, int mode)
 {
-  if (mode == ENCODER) {
+  if (mode == PIN_MODE_ENCODER) {
     if (IS_PIN_INTERRUPT(pin))
     {
       // nothing to do, pins states are managed
@@ -75,7 +75,7 @@ boolean FirmataEncoder::handlePinMode(byte pin, int mode)
 void FirmataEncoder::handleCapability(byte pin)
 {
   if (IS_PIN_INTERRUPT(pin)) {
-    Firmata.write(ENCODER);
+    Firmata.write(PIN_MODE_ENCODER);
     Firmata.write(28); //28 bits used for absolute position
   }
 }
@@ -90,14 +90,14 @@ boolean FirmataEncoder::handleSysex(byte command, byte argc, byte *argv)
   {
     byte encoderCommand, encoderNum, pinA, pinB, enableReports;
 
-    encoderCommand= argv[0];
+    encoderCommand = argv[0];
 
     if (encoderCommand == ENCODER_ATTACH)
     {
       encoderNum = argv[1];
       pinA = argv[2];
       pinB = argv[3];
-      if (Firmata.getPinMode(pinA)==IGNORE || Firmata.getPinMode(pinB)==IGNORE)
+      if (Firmata.getPinMode(pinA) == PIN_MODE_IGNORE || Firmata.getPinMode(pinB) == PIN_MODE_IGNORE)
       {
         return false;
       }
@@ -146,7 +146,7 @@ boolean FirmataEncoder::handleSysex(byte command, byte argc, byte *argv)
 void FirmataEncoder::reset()
 {
   byte encoder;
-  for(encoder=0; encoder<MAX_ENCODERS; encoder++)
+  for (encoder = 0; encoder < MAX_ENCODERS; encoder++)
   {
     detachEncoder(encoder);
   }
@@ -158,7 +158,7 @@ void FirmataEncoder::report()
   if (autoReport > 0)
   {
     bool report = false;
-    for (uint8_t encoderNum=0; encoderNum < MAX_ENCODERS; encoderNum++)
+    for (uint8_t encoderNum = 0; encoderNum < MAX_ENCODERS; encoderNum++)
     {
       if (isAttached(encoderNum))
       {
@@ -172,7 +172,7 @@ void FirmataEncoder::report()
             report = true;
           }
           positions[encoderNum] = position;
-          _reportEncoderPosition(encoderNum,position);
+          _reportEncoderPosition(encoderNum, position);
         }
       }
     }
@@ -204,7 +204,7 @@ void FirmataEncoder::reportPosition(byte encoder)
     Firmata.write(START_SYSEX);
     Firmata.write(ENCODER_DATA);
 
-    _reportEncoderPosition(encoder,encoders[encoder]->read());
+    _reportEncoderPosition(encoder, encoders[encoder]->read());
 
     Firmata.write(END_SYSEX);
   }
@@ -238,5 +238,3 @@ bool FirmataEncoder::isReportingEnabled()
 {
   return autoReport > 0;
 }
-
-

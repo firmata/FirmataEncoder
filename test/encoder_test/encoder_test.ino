@@ -89,8 +89,8 @@ test(handlePinModes)
 {
   FirmataEncoder encoder;
 
-  assertTrue(encoder.handlePinMode(2, ENCODER));  // 2 is interrupt
-  assertFalse(encoder.handlePinMode(1, ENCODER)); // 1 is NOT interrupt
+  assertTrue(encoder.handlePinMode(2, PIN_MODE_ENCODER));  // 2 is interrupt
+  assertFalse(encoder.handlePinMode(1, PIN_MODE_ENCODER)); // 1 is NOT interrupt
 }
 
 test(reportEncoderPosition)
